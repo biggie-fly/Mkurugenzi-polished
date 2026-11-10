@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Our story | Mkurugenzi</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&family=Instrument+Sans:wght@400..700&family=Bebas+Neue&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <script>
+    // Apply saved theme (or the system setting) before the page paints
+    try { const t = localStorage.getItem("mk_theme"); document.documentElement.dataset.theme = t ? JSON.parse(t) : (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"); } catch (e) {}
+  </script>
+</head>
+<body data-page="about">
+<main>
+  <header class="page-head"><div class="wrap"><div class="crumbs"><a href="index.html">Home</a> / Our story</div><h1>Our story</h1><p>Mkurugenzi is Swahili for director. The one who runs things.</p></div></header>
+  <section class="section"><div class="wrap story">
+    <div id="story-img"></div>
+    <div>
+      <p class="manifesto">More than just a brand.</p>
+      <p style="margin-top:1.5rem">We started Mkurugenzi in Nairobi to make clothes for people who are building something: a business, a career, a name. Clean cuts, heavy fabrics and colours that go with everything.</p>
+      <p>Every collection, from Black Excellence to Botanical, is designed here at home. We keep the range tight so each piece earns its place in your wardrobe.</p>
+      <a class="btn" href="shop.html">Shop the collections</a>
+    </div>
+  </div></section>
+  <section class="dark section"><div class="wrap">
+    <h2 style="font-size:var(--step-4);max-width:18ch">Built for gents, ladies and everyone in between.</h2>
+    <div class="services" style="border-color:var(--line-light);margin-top:2.5rem">
+      <div><h3>Gents</h3><p style="color:inherit;opacity:.8">Tees, jackets and quarter zips.</p><a href="shop.html#gents">Shop gents</a></div>
+      <div style="border-color:var(--line-light)"><h3>Ladies</h3><p style="color:inherit;opacity:.8">Muse crops, matched sweatsuits, the tote.</p><a href="shop.html#ladies">Shop ladies</a></div>
+      <div style="border-color:var(--line-light)"><h3>Unisex</h3><p style="color:inherit;opacity:.8">Hoodies, sweatsuits, caps and socks.</p><a href="shop.html#unisex">Shop unisex</a></div>
+    </div>
+  </div></section>
+</main>
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+<script>$("#story-img").innerHTML = productMedia(getProduct("sweatsuit-coffee-brown"));</script>
+</body>
+</html>

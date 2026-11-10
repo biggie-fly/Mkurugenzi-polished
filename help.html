@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Help and sizing | Mkurugenzi</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&family=Instrument+Sans:wght@400..700&family=Bebas+Neue&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <script>
+    // Apply saved theme (or the system setting) before the page paints
+    try { const t = localStorage.getItem("mk_theme"); document.documentElement.dataset.theme = t ? JSON.parse(t) : (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"); } catch (e) {}
+  </script>
+</head>
+<body data-page="help">
+<main>
+  <header class="page-head"><div class="wrap"><div class="crumbs"><a href="index.html">Home</a> / Help</div><h1>Help and sizing</h1><p>Delivery, exchanges, sizes and common questions.</p></div></header>
+  <div class="wrap help-layout">
+    <nav class="help-nav" aria-label="Help topics"><a href="#delivery">Delivery</a><a href="#returns">Exchanges</a><a href="#sizing">Size guide</a><a href="#payments">Payments</a><a href="#faq">FAQ</a></nav>
+    <div>
+      <section class="help-section" id="delivery"><h2>Delivery</h2>
+        <table><thead><tr><th>Option</th><th>Time</th><th>Fee</th></tr></thead><tbody id="delivery-rows"></tbody></table>
+        <p style="margin-top:1rem">Orders placed before 2pm on a working day leave the same day. You'll get an SMS with tracking once your parcel is on its way.</p>
+      </section>
+      <section class="help-section" id="returns"><h2>Exchanges</h2>
+        <p>If something doesn't fit, you can exchange it for another size or colour within 7 days of delivery. Items must be unworn, unwashed and have their tags on.</p>
+        <p>To start an exchange, message us on WhatsApp or use the <a href="contact.html">contact form</a> with your order number.</p>
+      </section>
+      <section class="help-section" id="sizing"><h2>Size guide</h2>
+        <p>Measurements are body chest in centimetres. If you're between sizes, size up for a relaxed fit.</p>
+        <table><thead><tr><th>Size</th><th>Chest</th><th>Waist</th><th>Length (tee)</th></tr></thead>
+        <tbody><tr><td>XS</td><td>82–87</td><td>66–71</td><td>66</td></tr><tr><td>S</td><td>88–94</td><td>72–78</td><td>69</td></tr><tr><td>M</td><td>95–101</td><td>79–85</td><td>72</td></tr><tr><td>L</td><td>102–108</td><td>86–92</td><td>74</td></tr><tr><td>XL</td><td>109–116</td><td>93–100</td><td>76</td></tr><tr><td>XXL</td><td>117–124</td><td>101–108</td><td>78</td></tr></tbody></table>
+      </section>
+      <section class="help-section" id="payments"><h2>Payments</h2>
+        <p>We accept M-Pesa, Visa, Mastercard, American Express and PayPal. For M-Pesa, you'll get a prompt on your phone to enter your PIN. Card payments are processed securely and we never store your card number.</p>
+        <ul class="pay-marks" aria-label="Accepted payments" id="marks"></ul>
+      </section>
+      <section class="help-section details" id="faq"><h2>Questions people ask</h2>
+        <details><summary>How do I know my order went through?</summary><div>You'll see an order number on screen and get a confirmation by email and SMS.</div></details>
+        <details><summary>Can I change my order after paying?</summary><div>Yes, if it hasn't left our store. Message us on WhatsApp with your order number as soon as possible.</div></details>
+        <details><summary>Do you deliver outside Kenya?</summary><div>Not yet. Message us if you're abroad and we'll see what we can arrange.</div></details>
+        <details><summary>Do you do bulk or corporate orders?</summary><div>Yes. Use the contact form and choose "Bulk or corporate order".</div></details>
+        <details><summary>My M-Pesa prompt didn't arrive. What now?</summary><div>Check that your phone is on and the number is correct, then tap "Resend prompt" at checkout. If it still doesn't come, choose another payment method or contact us.</div></details>
+      </section>
+    </div>
+  </div>
+</main>
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+<script>
+  $("#delivery-rows").innerHTML = DELIVERY.map((d) => `<tr><td>${d.name}</td><td>${d.eta}</td><td>${d.fee ? money(d.fee) : "Free"}</td></tr>`).join("");
+  $("#marks").innerHTML = payMarks();
+</script>
+</body>
+</html>

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Saved items | Mkurugenzi</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&family=Instrument+Sans:wght@400..700&family=Bebas+Neue&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <script>
+    // Apply saved theme (or the system setting) before the page paints
+    try { const t = localStorage.getItem("mk_theme"); document.documentElement.dataset.theme = t ? JSON.parse(t) : (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"); } catch (e) {}
+  </script>
+</head>
+<body data-page="wishlist">
+<main>
+  <header class="page-head"><div class="wrap"><div class="crumbs"><a href="index.html">Home</a> / Saved</div><h1>Saved items</h1><p>Pieces you've saved for later. Pick a size to move one to your bag.</p></div></header>
+  <div class="wrap" style="padding:2.5rem var(--gutter) 5rem"><div class="grid" id="grid"></div></div>
+</main>
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+<script>
+  function renderSaved() {
+    const list = Wishlist.items().map(getProduct).filter(Boolean);
+    $("#grid").innerHTML = list.length ? list.map(productCard).join("")
+      : `<div class="empty" style="grid-column:1/-1"><p>Nothing saved yet. Tap the heart on any product to keep it here.</p><a class="btn" href="shop.html">Browse the shop</a></div>`;
+  }
+  document.addEventListener("wishlist:change", renderSaved);
+  renderSaved();
+</script>
+</body>
+</html>

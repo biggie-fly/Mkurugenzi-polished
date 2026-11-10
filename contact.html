@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Contact us | Mkurugenzi</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&family=Instrument+Sans:wght@400..700&family=Bebas+Neue&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <script>
+    // Apply saved theme (or the system setting) before the page paints
+    try { const t = localStorage.getItem("mk_theme"); document.documentElement.dataset.theme = t ? JSON.parse(t) : (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"); } catch (e) {}
+  </script>
+</head>
+<body data-page="contact">
+<main>
+  <header class="page-head"><div class="wrap"><div class="crumbs"><a href="index.html">Home</a> / Contact</div><h1>Talk to us</h1><p>Questions about an order, sizing, or a bulk order for your team. We reply within one working day.</p></div></header>
+  <div class="wrap contact-layout">
+    <div>
+      <div class="channels" id="channels"></div>
+      <div class="details" style="margin-top:2.5rem">
+        <h2 style="font-size:var(--step-2)">Quick answers</h2>
+        <details><summary>Where is my order?</summary><div>You'll get an SMS with tracking when your order leaves us. For anything else, send your order number on WhatsApp.</div></details>
+        <details><summary>Which size should I get?</summary><div>Check the <a href="help.html#sizing">size guide</a>. Between sizes? Size up for a relaxed fit.</div></details>
+        <details><summary>How do exchanges work?</summary><div>Within 7 days of delivery, unworn with tags. <a href="help.html#returns">See the details</a>.</div></details>
+      </div>
+    </div>
+
+    <div class="form-card" id="form-card">
+      <form id="contact" novalidate>
+        <h2 style="font-size:var(--step-3)">Send a message</h2>
+        <div class="form-grid" style="margin-top:1.5rem">
+          <div class="field"><label for="c-name">Your name</label><input id="c-name" name="name" autocomplete="name" required><p class="field-error"></p></div>
+          <div class="field"><label for="c-email">Email</label><input id="c-email" name="email" type="email" autocomplete="email" required><p class="field-error"></p></div>
+          <div class="field"><label for="c-phone">Phone <span class="muted" style="font-weight:400">(optional)</span></label><input id="c-phone" name="phone" type="tel" autocomplete="tel" placeholder="0712 345 678"><p class="field-error"></p></div>
+          <div class="field"><label for="c-topic">What's it about?</label>
+            <select id="c-topic" name="topic" required>
+              <option value="">Choose a topic</option>
+              <option>An order I placed</option>
+              <option>Sizing and fit</option>
+              <option>Exchange</option>
+              <option>Bulk or corporate order</option>
+              <option>Collaboration or press</option>
+              <option>Something else</option>
+            </select><p class="field-error"></p></div>
+          <div class="field full" id="order-field" hidden><label for="c-order">Order number</label><input id="c-order" name="order" placeholder="MK-XXXXXX"><span class="hint">You'll find it in your confirmation email.</span><p class="field-error"></p></div>
+          <div class="field full"><label for="c-msg">Message</label><textarea id="c-msg" name="message" maxlength="1000" required></textarea><span class="hint" id="c-count">0 / 1000</span><p class="field-error"></p></div>
+          <label class="check full"><input type="checkbox" name="copy" id="c-copy"> <span>Email me a copy of this message</span></label>
+        </div>
+        <button class="btn" type="submit" style="margin-top:1.5rem">Send message</button>
+        <p class="field-error" id="c-form-error" role="alert"></p>
+      </form>
+    </div>
+  </div>
+</main>
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+<script src="js/contact.js"></script>
+</body>
+</html>

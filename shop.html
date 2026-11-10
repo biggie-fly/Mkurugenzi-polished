@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Shop | Mkurugenzi</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&family=Instrument+Sans:wght@400..700&family=Bebas+Neue&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <script>
+    // Apply saved theme (or the system setting) before the page paints
+    try { const t = localStorage.getItem("mk_theme"); document.documentElement.dataset.theme = t ? JSON.parse(t) : (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"); } catch (e) {}
+  </script>
+</head>
+<body data-page="shop">
+<main>
+  <header class="page-head">
+    <div class="wrap">
+      <div class="crumbs"><a href="index.html">Home</a> / <span id="crumb">Shop</span></div>
+      <h1 id="title">Shop all</h1>
+      <p id="blurb">Everything we make, for gents, ladies and everyone.</p>
+      <nav class="cat-tabs" aria-label="Categories" id="cat-tabs"></nav>
+    </div>
+  </header>
+
+  <div class="wrap">
+    <div class="toolbar">
+      <div class="types" role="group" aria-label="Filter by product type" id="types"></div>
+      <div style="display:flex;gap:1rem;align-items:center">
+        <span class="small muted" id="count" aria-live="polite"></span>
+        <label class="select">Sort
+          <select id="sort">
+            <option value="featured">Featured</option>
+            <option value="new">Newest</option>
+            <option value="low">Price, low to high</option>
+            <option value="high">Price, high to low</option>
+            <option value="az">Name, A to Z</option>
+          </select>
+        </label>
+      </div>
+    </div>
+    <div class="grid" id="grid"></div>
+    <div style="height:5rem"></div>
+  </div>
+</main>
+
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+<script>
+  const state = { cat: "", collection: "", q: "", type: "", sort: "featured" };
+
+  function readHash() {
+    const h = hashParam();
+    state.cat = ""; state.collection = ""; state.q = "";
+    if (CATEGORIES[h]) state.cat = h;
+    else if (h.startsWith("c=")) state.collection = h.slice(2);
+    else if (h.startsWith("q=")) state.q = h.slice(2);
+    state.type = "";
+  }
+
+  function scoped() {
+    return PRODUCTS.filter((p) =>
+      (!state.cat || p.cat === state.cat) &&
+      (!state.collection || p.collection === state.collection) &&
+      (!state.q || [p.name, p.collection, TYPE_INFO[p.type].label].join(" ").toLowerCase().includes(state.q.toLowerCase())));
+  }
+
+  function render() {
+    // Heading
+    let title = "Shop all", blurb = "Everything we make, for gents, ladies and everyone.";
+    if (state.cat) { title = CATEGORIES[state.cat].name; blurb = CATEGORIES[state.cat].blurb; }
+    if (state.collection) { title = state.collection; blurb = "Every piece in the " + state.collection + " line."; }
+    if (state.q) { title = "Search"; blurb = `Results for "${state.q}".`; }
+    $("#title").textContent = title; $("#crumb").textContent = title; $("#blurb").textContent = blurb;
+    document.title = title + " | Mkurugenzi";
+
+    // Category tabs
+    const tabs = [["", "All"], ["gents", "Gents"], ["ladies", "Ladies"], ["unisex", "Unisex"]];
+    $("#cat-tabs").innerHTML = tabs.map(([k, n]) => {
+      const c = k ? PRODUCTS.filter((p) => p.cat === k).length : PRODUCTS.length;
+      const cur = !state.collection && !state.q && state.cat === k;
+      return `<a class="chip" href="shop.html${k ? "#" + k : "#all"}"${cur ? ' aria-current="page"' : ""}>${n} <small>${c}</small></a>`;
+    }).join("");
+
+    // Type chips (only types present in scope)
+    const base = scoped();
+    const types = [...new Set(base.map((p) => p.type))];
+    $("#types").innerHTML = [`<button class="chip" data-type="" aria-pressed="${!state.type}">All types</button>`]
+      .concat(types.map((t) => `<button class="chip" data-type="${t}" aria-pressed="${state.type === t}">${TYPE_INFO[t].label}</button>`)).join("");
+
+    // Products
+    let list = base.filter((p) => !state.type || p.type === state.type);
+    const price = (p) => (p.price == null ? Infinity : p.price);
+    if (state.sort === "low") list.sort((a, b) => price(a) - price(b));
+    if (state.sort === "high") list.sort((a, b) => (b.price ?? -1) - (a.price ?? -1));
+    if (state.sort === "az") list.sort((a, b) => a.name.localeCompare(b.name));
+    if (state.sort === "new") list.sort((a, b) => (b.isNew ? 1 : 0) - (a.isNew ? 1 : 0));
+    $("#count").textContent = `${list.length} piece${list.length === 1 ? "" : "s"}`;
+    $("#grid").innerHTML = list.length
+      ? list.map(productCard).join("")
+      : `<div class="empty" style="grid-column:1/-1"><p>Nothing matches that yet. Clear the filters or browse everything.</p><a class="btn" href="shop.html#all">Show all products</a></div>`;
+  }
+
+  $("#types").addEventListener("click", (e) => { const b = e.target.closest("[data-type]"); if (!b) return; state.type = b.dataset.type; render(); });
+  $("#sort").addEventListener("change", (e) => { state.sort = e.target.value; render(); });
+  window.addEventListener("hashchange", () => { readHash(); render(); window.scrollTo({ top: 0 }); updateNav(); });
+  function updateNav() { $$(".main-nav a").forEach((a) => { const h = a.getAttribute("href"); a.toggleAttribute("aria-current", h === "shop.html#" + state.cat || (h === "shop.html" && !state.cat && !state.collection && !state.q)); }); }
+  readHash(); render(); updateNav();
+</script>
+</body>
+</html>

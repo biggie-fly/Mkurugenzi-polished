@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Checkout | Mkurugenzi</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&family=Instrument+Sans:wght@400..700&family=Bebas+Neue&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <script>
+    // Apply saved theme (or the system setting) before the page paints
+    try { const t = localStorage.getItem("mk_theme"); document.documentElement.dataset.theme = t ? JSON.parse(t) : (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"); } catch (e) {}
+  </script>
+</head>
+<body data-page="checkout">
+<main id="checkout-main">
+  <header class="page-head"><div class="wrap"><div class="crumbs"><a href="index.html">Home</a> / <a href="cart.html">Bag</a> / Checkout</div><h1>Checkout</h1></div></header>
+  <div class="wrap checkout-layout" id="checkout-root">
+    <form id="checkout" novalidate>
+      <!-- 1. Contact -->
+      <section class="step" aria-labelledby="s1">
+        <div class="step__head"><span class="step__num">1</span><h2 id="s1">Your details</h2></div>
+        <div class="form-grid">
+          <div class="field"><label for="first">First name</label><input id="first" name="first" autocomplete="given-name" required><p class="field-error"></p></div>
+          <div class="field"><label for="last">Last name</label><input id="last" name="last" autocomplete="family-name" required><p class="field-error"></p></div>
+          <div class="field"><label for="email">Email</label><input id="email" name="email" type="email" autocomplete="email" required><span class="hint">We'll send your receipt here.</span><p class="field-error"></p></div>
+          <div class="field"><label for="phone">Phone</label><div class="prefix-input"><span>+254</span><input id="phone" name="phone" type="tel" inputmode="tel" autocomplete="tel-national" placeholder="712 345 678" required></div><span class="hint">For delivery updates by SMS.</span><p class="field-error"></p></div>
+        </div>
+      </section>
+
+      <!-- 2. Delivery -->
+      <section class="step" aria-labelledby="s2">
+        <div class="step__head"><span class="step__num">2</span><h2 id="s2">Delivery</h2></div>
+        <div class="options" id="delivery-options" role="radiogroup" aria-label="Delivery option"></div>
+        <div class="form-grid" id="address" style="margin-top:1.25rem">
+          <div class="field"><label for="county">County</label><select id="county" name="county" required><option value="">Choose county</option></select><p class="field-error"></p></div>
+          <div class="field"><label for="town">Town or area</label><input id="town" name="town" autocomplete="address-level2" placeholder="e.g. Kilimani" required><p class="field-error"></p></div>
+          <div class="field full"><label for="street">Street, building and house number</label><input id="street" name="street" autocomplete="street-address" placeholder="e.g. Argwings Kodhek Rd, Elgon Court, Apt 4B" required><p class="field-error"></p></div>
+          <div class="field full"><label for="notes">Directions for the rider <span class="muted" style="font-weight:400">(optional)</span></label><input id="notes" name="notes" placeholder="Landmark, gate colour, best time to call"></div>
+        </div>
+        <p class="muted small" id="pickup-note" hidden style="margin-top:1rem">We'll SMS you when your order is ready to collect, with the pickup address in Nairobi CBD.</p>
+      </section>
+
+      <!-- 3. Payment -->
+      <section class="step" aria-labelledby="s3">
+        <div class="step__head"><span class="step__num">3</span><h2 id="s3">Payment</h2></div>
+        <div class="pay-tabs" role="radiogroup" aria-label="Payment method">
+          <label class="pay-tab"><input type="radio" name="method" value="mpesa" checked><span><i class="logo logo--mpesa">M-PESA</i>M-Pesa</span></label>
+          <label class="pay-tab"><input type="radio" name="method" value="visa"><span><i class="logo logo--visa">VISA</i>Visa</span></label>
+          <label class="pay-tab"><input type="radio" name="method" value="mastercard"><span><i class="logo logo--mastercard" aria-hidden="true"></i>Mastercard</span></label>
+          <label class="pay-tab"><input type="radio" name="method" value="amex"><span><i class="logo logo--amex">AMEX</i>Amex</span></label>
+          <label class="pay-tab"><input type="radio" name="method" value="paypal"><span><i class="logo logo--paypal">PayPal</i>PayPal</span></label>
+        </div>
+
+        <div class="pay-panel" data-panel="mpesa">
+          <p>We'll send a payment prompt to this phone. Enter your M-Pesa PIN on your phone to finish.</p>
+          <div class="field"><label for="mpesa-phone">M-Pesa phone number</label><div class="prefix-input"><span>+254</span><input id="mpesa-phone" type="tel" inputmode="tel" placeholder="712 345 678"></div><p class="field-error"></p></div>
+        </div>
+
+        <div class="pay-panel" data-panel="card" hidden>
+          <div class="form-grid">
+            <div class="field full"><label for="card-name">Name on card</label><input id="card-name" autocomplete="cc-name"><p class="field-error"></p></div>
+            <div class="field full"><label for="card-number">Card number</label>
+              <div class="input-wrap"><input id="card-number" inputmode="numeric" autocomplete="cc-number" placeholder="1234 5678 9012 3456"><span class="brand" id="card-brand"></span></div>
+              <span class="hint" id="card-hint">We accept Visa, Mastercard and American Express.</span><p class="field-error"></p></div>
+            <div class="field"><label for="card-exp">Expiry date</label><input id="card-exp" inputmode="numeric" autocomplete="cc-exp" placeholder="MM / YY"><p class="field-error"></p></div>
+            <div class="field"><label for="card-cvc">Security code</label><input id="card-cvc" inputmode="numeric" autocomplete="cc-csc" placeholder="3 digits"><span class="hint" id="cvc-hint">The 3 digits on the back of your card.</span><p class="field-error"></p></div>
+          </div>
+        </div>
+
+        <div class="pay-panel" data-panel="paypal" hidden>
+          <p>You'll sign in to PayPal to approve the payment, then come back here to see your order.</p>
+          <p style="margin:0">PayPal charges in US dollars. Estimated total: <strong id="usd"></strong></p>
+        </div>
+
+        <p class="secure"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>Payments are encrypted. We never store your card details.</p>
+      </section>
+
+      <section class="step" style="padding-bottom:0">
+        <label class="check"><input type="checkbox" id="terms"> <span>I agree to the <a href="help.html#returns">delivery and exchange terms</a>.</span></label>
+        <p class="field-error" id="terms-error"></p>
+        <button class="btn btn--block" type="submit" id="pay-btn" style="min-height:56px;font-size:1.0625rem;margin-top:.5rem">Pay</button>
+        <p class="field-error" id="form-error" role="alert"></p>
+      </section>
+    </form>
+
+    <aside class="summary" aria-labelledby="sum-title">
+      <h2 id="sum-title">Order summary</h2>
+      <div id="sum-lines"></div>
+      <div style="border-top:1px solid var(--line);margin-top:.75rem;padding-top:.5rem">
+        <div class="row-between"><span>Subtotal</span><span id="sum-sub"></span></div>
+        <div class="row-between"><span>Delivery</span><span id="sum-ship"></span></div>
+        <div class="row-between total"><span>Total</span><span id="sum-total"></span></div>
+      </div>
+      <a href="cart.html" class="small muted">Edit bag</a>
+    </aside>
+  </div>
+</main>
+
+<!-- Payment modal -->
+<div class="modal" id="pay-modal" hidden><div class="modal__box" role="dialog" aria-modal="true" aria-labelledby="modal-title" id="modal-box"></div></div>
+
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+<script src="js/checkout.js"></script>
+</body>
+</html>

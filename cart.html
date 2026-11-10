@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Your bag | Mkurugenzi</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&family=Instrument+Sans:wght@400..700&family=Bebas+Neue&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <script>
+    // Apply saved theme (or the system setting) before the page paints
+    try { const t = localStorage.getItem("mk_theme"); document.documentElement.dataset.theme = t ? JSON.parse(t) : (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"); } catch (e) {}
+  </script>
+</head>
+<body data-page="cart">
+<main>
+  <header class="page-head"><div class="wrap"><div class="crumbs"><a href="index.html">Home</a> / Bag</div><h1>Your bag</h1></div></header>
+  <div class="wrap cart-layout" id="cart-root"></div>
+</main>
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+<script>
+  const root = $("#cart-root");
+  function renderCart() {
+    const items = Cart.items();
+    if (!items.length) {
+      root.style.display = "block";
+      root.innerHTML = `<div class="empty"><p>Your bag is empty. Start with the November drop or browse by category.</p><a class="btn" href="shop.html">Browse the shop</a></div>`;
+      return;
+    }
+    root.innerHTML = `<div id="lines">${items.map(lineHTML).join("")}<p style="margin-top:1.5rem"><a href="shop.html">Continue shopping</a></p></div>
+      <aside class="summary" aria-labelledby="sum-title">
+        <h2 id="sum-title">Summary</h2>
+        <div class="row-between"><span>Items (${Cart.count()})</span><span>${money(Cart.subtotal())}</span></div>
+        <div class="row-between"><span>Delivery</span><span class="muted">From ${money(0)} at checkout</span></div>
+        <div class="row-between total"><span>Subtotal</span><span>${money(Cart.subtotal())}</span></div>
+        <a class="btn btn--block" href="checkout.html" style="margin-top:1.25rem">Checkout</a>
+        <ul class="pay-marks" style="margin-top:1rem;justify-content:center" aria-label="Accepted payments">${payMarks()}</ul>
+      </aside>`;
+  }
+  bindLineControls(root);
+  document.addEventListener("cart:change", renderCart);
+  renderCart();
+</script>
+</body>
+</html>

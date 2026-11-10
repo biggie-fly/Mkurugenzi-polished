@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Product | Mkurugenzi</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&family=Instrument+Sans:wght@400..700&family=Bebas+Neue&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <script>
+    // Apply saved theme (or the system setting) before the page paints
+    try { const t = localStorage.getItem("mk_theme"); document.documentElement.dataset.theme = t ? JSON.parse(t) : (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"); } catch (e) {}
+  </script>
+</head>
+<body data-page="product">
+<main class="wrap" id="pdp-root"></main>
+<section class="section wrap" aria-labelledby="related-title" id="related-wrap">
+  <div class="section-head"><h2 id="related-title">You might also like</h2></div>
+  <div class="grid" id="related"></div>
+</section>
+
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+<script>
+  function renderPDP() {
+    const p = getProduct(hashParam()) || PRODUCTS[0];
+    const info = TYPE_INFO[p.type];
+    const cat = CATEGORIES[p.cat];
+    const oneSize = p.sizes.length === 1;
+    document.title = p.name + " | Mkurugenzi";
+
+    $("#pdp-root").innerHTML = `
+      <div class="crumbs" style="padding-top:1.5rem"><a href="index.html">Home</a> / <a href="shop.html#${p.cat}">${cat.name}</a> / <a href="shop.html#c=${encodeURIComponent(p.collection)}">${esc(p.collection)}</a></div>
+      <div class="pdp">
+        <div class="pdp__gallery">${productMedia(p)}</div>
+        <div class="pdp__info">
+          <h1>${esc(p.name)}</h1>
+          <div class="price">${priceText(p)}</div>
+          <form id="buy" novalidate>
+            ${p.price == null ? `<p>This piece is in the shop soon. Message us on WhatsApp and we'll tell you when it's ready to order.</p>
+              <div class="buy-row"><a class="btn" href="https://wa.me/${STORE.whatsapp}?text=${encodeURIComponent("Hi, I'd like to know when the " + p.name + " is available.")}" target="_blank" rel="noopener">Ask on WhatsApp</a>
+              <button type="button" class="wish-lg" data-wish="${p.id}" aria-pressed="${Wishlist.has(p.id)}" aria-label="Save">${ICON.heart}</button></div>`
+            : `
+            <fieldset style="border:0;padding:0;margin:0">
+              <legend class="row-between" style="width:100%;font-weight:600">${oneSize ? "Size: one size" : "Choose a size"} ${oneSize ? "" : '<a class="small muted" href="help.html#sizing">Size guide</a>'}</legend>
+              <div class="size-grid">${p.sizes.map((s, i) => `<label><input type="radio" name="size" value="${esc(s)}" ${oneSize ? "checked" : ""}><span>${esc(s)}</span></label>`).join("")}</div>
+              <p class="field-error" id="size-error" aria-live="polite"></p>
+            </fieldset>
+            <div class="row-between" style="justify-content:flex-start;gap:1rem;align-items:center">
+              <span style="font-weight:600">Quantity</span>
+              <div class="qty" style="margin:0"><button type="button" data-step="-1" aria-label="Decrease quantity">−</button><span id="qty">1</span><button type="button" data-step="1" aria-label="Increase quantity">+</button></div>
+            </div>
+            <div class="buy-row">
+              <button class="btn" type="submit">Add to bag, ${money(p.price)}</button>
+              <button type="button" class="wish-lg" data-wish="${p.id}" aria-pressed="${Wishlist.has(p.id)}" aria-label="Save ${esc(p.name)}">${ICON.heart}</button>
+            </div>
+            <button class="btn btn--ghost btn--block" type="button" id="buy-now">Buy now</button>`}
+          </form>
+          <div class="details" style="margin-top:2rem">
+            <details open><summary>Description</summary><div><p>${info.copy}</p><p>Part of the ${esc(p.collection)} line. ${cat.name} fit.</p></div></details>
+            <details><summary>Care</summary><div>${info.care}</div></details>
+            <details><summary>Delivery and exchanges</summary><div><p>${DELIVERY.map((d) => `${d.name}: ${d.fee ? money(d.fee) : "free"}, ${d.eta.toLowerCase()}.`).join(" ")}</p><p>Wrong size? Exchange within 7 days, unworn with tags. <a href="help.html#returns">Read more</a>.</p></div></details>
+          </div>
+        </div>
+      </div>`;
+
+    // Quantity + add to bag
+    const form = $("#buy");
+    let qty = 1;
+    form.addEventListener("click", (e) => {
+      const s = e.target.closest("[data-step]"); if (!s) return;
+      qty = Math.max(1, Math.min(10, qty + Number(s.dataset.step))); $("#qty").textContent = qty;
+    });
+    const add = () => {
+      const size = form.querySelector("input[name=size]:checked")?.value;
+      if (!size) { $("#size-error").textContent = "Choose a size to add this to your bag."; form.querySelector("input[name=size]").focus(); return false; }
+      $("#size-error").textContent = ""; Cart.add(p.id, size, qty); return true;
+    };
+    form.addEventListener("submit", (e) => { e.preventDefault(); add(); });
+    form.addEventListener("change", () => ($("#size-error") ? ($("#size-error").textContent = "") : 0));
+    $("#buy-now")?.addEventListener("click", () => { if (add()) location.href = "checkout.html"; });
+
+    // Related
+    const related = PRODUCTS.filter((x) => x.id !== p.id && (x.collection === p.collection || x.type === p.type)).slice(0, 4);
+    const fill = PRODUCTS.filter((x) => x.id !== p.id && x.cat === p.cat && !related.includes(x));
+    $("#related").innerHTML = related.concat(fill).slice(0, 4).map(productCard).join("");
+    window.scrollTo({ top: 0 });
+  }
+  window.addEventListener("hashchange", renderPDP);
+  renderPDP();
+</script>
+</body>
+</html>
