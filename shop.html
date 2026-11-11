@@ -11,6 +11,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&family=Instrument+Sans:wght@400..700&family=Bebas+Neue&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/three-d.css">
   <script>
     // Apply saved theme (or the system setting) before the page paints
     try { const t = localStorage.getItem("mk_theme"); document.documentElement.dataset.theme = t ? JSON.parse(t) : (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"); } catch (e) {}
@@ -111,5 +112,6 @@
   function updateNav() { $$(".main-nav a").forEach((a) => { const h = a.getAttribute("href"); a.toggleAttribute("aria-current", h === "shop.html#" + state.cat || (h === "shop.html" && !state.cat && !state.collection && !state.q)); }); }
   readHash(); render(); updateNav();
 </script>
+<script src="js/three-d.js"></script>
 </body>
 </html>
